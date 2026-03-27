@@ -1,0 +1,1 @@
+# generate algorithm how the learning rate should change
