@@ -2,6 +2,9 @@ from tutor.config.rag_settings import answer_rag, question_rag
 from tutor.retrieval.chroma_store import get_vectordb
 from tutor.schemas.state import TutorState
 
+from langsmith import traceable
+
+@traceable
 def question_context(state: TutorState) -> str:
 
     vectordb = get_vectordb(question_rag)
@@ -43,7 +46,7 @@ def question_context(state: TutorState) -> str:
     return context_prompt
 
 
-
+@traceable
 def answer_context(state: TutorState) -> str:
 
     vectordb = get_vectordb(answer_rag)

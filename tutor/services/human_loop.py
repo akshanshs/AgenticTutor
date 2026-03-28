@@ -1,6 +1,8 @@
 from tutor.schemas.state import TutorState
 from langgraph.types import interrupt
+from langsmith import traceable
 
+@traceable
 def human_review(state: TutorState):
     teacher_decision = interrupt(
         {
