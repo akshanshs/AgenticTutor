@@ -47,7 +47,7 @@ builder.add_conditional_edges(
     "decide_next_action",
     route_after_decision,
     {
-        "ask_question": "ask_question",
+        "ask_question": "update_learning_rate",
         "use_prerequisite_tool": "queue_tool_call",
         "use_example_tool": "queue_tool_call",
         "use_hint_tool": "queue_tool_call",
@@ -60,7 +60,7 @@ builder.add_conditional_edges(
     "human_review",
     route_after_human_review,
     {
-        "ask_question": "ask_question",
+        "ask_question": "update_learning_rate",
         "use_prerequisite_tool": "queue_tool_call",
         "use_example_tool": "queue_tool_call",
         "use_hint_tool": "queue_tool_call",
