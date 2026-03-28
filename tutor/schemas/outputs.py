@@ -11,6 +11,13 @@ class EvalOut(BaseModel):
     feedback: str = Field(description="explanation for the correct answer")
     is_correct: bool
 
+class LearningOut(BaseModel):
+    learning_rate: float = Field(
+        description="Rate at which learning proceeds",
+        ge=0.05,
+        le=0.2
+    )
+
 class DiagnosisOut(BaseModel):
     diagnosis: Literal[
         "misconception",

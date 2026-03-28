@@ -7,6 +7,7 @@ from langgraph.graph.message import add_messages
 class TutorState(TypedDict):
     student_id: str
     mastery: dict[str, float]
+    learning_rate: dict[str, float]
 
     current_skill: str
     current_question: str
