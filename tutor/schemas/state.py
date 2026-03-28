@@ -7,6 +7,7 @@ from langgraph.graph.message import add_messages
 class TutorState(TypedDict):
     student_id: str
     mastery: dict[str, float]
+    learning_rates: dict[str, float]
 
     current_skill: str
     current_question: str
@@ -28,7 +29,9 @@ class TutorState(TypedDict):
     needs_human_review: bool
     teacher_decision: Optional[str]
 
-    question_count: int
+    question_count: Optional[int]
+    answer_count: Optional[int]
+
     answered_questions: Annotated[list[str], operator.add]
     # Needed for ToolNode
     messages: Annotated[list[AnyMessage], add_messages]

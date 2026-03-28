@@ -5,6 +5,7 @@ from langgraph.types import Command
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
+
 # Change this import if your graph file has a different name
 from tutor.builder import graph
 
@@ -60,10 +61,11 @@ def graph_config():
     return {"configurable": {"thread_id": st.session_state.thread_id}}
 
 
-def build_initial_state(student_id: str, mastery: dict[str, float]):
+def build_initial_state(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float]):
     return {
         "student_id": student_id,
         "mastery": mastery,
+        "learning_rates": learning_rates,
         "current_skill": "",
         "current_question": "",
         "correct_last_answer": "",
@@ -77,6 +79,7 @@ def build_initial_state(student_id: str, mastery: dict[str, float]):
         "tool_context": None,
         "needs_human_review": False,
         "teacher_decision": None,
+        "answer_count": 0,
         "question_count": 0,
         "answered_questions": [],
         "messages": [],
@@ -109,8 +112,8 @@ def session_finished():
     return not interrupts and not nxt
 
 
-def start_session(student_id: str, mastery: dict[str, float]):
-    initial_state = build_initial_state(student_id, mastery)
+def start_session(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float]):
+    initial_state = build_initial_state(student_id, mastery, learning_rates)
     graph.invoke(initial_state, config=graph_config())
     st.session_state.started = True
     st.session_state.history = []
@@ -182,11 +185,18 @@ with st.sidebar:
         "thermodynamics": thermo,
     }
 
+    learning_rates_input = {
+        "motion": 0.15,
+        "force": 0.15,
+        "energy": 0.15,
+        "thermodynamics": 0.15,
+    }
+
     c1, c2 = st.columns(2)
     with c1:
         if st.button("Start / Restart", use_container_width=True):
             reset_session()
-            start_session(student_id, mastery_input)
+            start_session(student_id, mastery_input, learning_rates_input)
             st.rerun()
 
     with c2:
