@@ -40,6 +40,8 @@ def evaluate_answer(state: TutorState):
 
     if result.is_correct:
         answered_count = state["answer_count"] + 1
+    else:
+        answered_count = state["answer_count"]
 
     return {
         "score": float(result.score),
