@@ -1,5 +1,7 @@
 from tutor.schemas.state import TutorState
+from langsmith import traceable
 
+@traceable
 def update_mastery(state: TutorState):
     skill = state["current_skill"]
     old = state["mastery"][skill]
