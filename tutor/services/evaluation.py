@@ -38,9 +38,13 @@ def evaluate_answer(state: TutorState):
         "context_prompt": context_prompt,
     })
 
+    if result.is_correct:
+        answered_count = state["answer_count"] + 1
+
     return {
         "score": float(result.score),
         "feedback": result.feedback,
         "is_correct": result.is_correct,
         "answered_questions": [state["current_question"]] if result.is_correct else [],
+        "answered_count": answered_count
     }
