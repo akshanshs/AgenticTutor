@@ -4,7 +4,7 @@ from tutor.models import llm
 
 def update_learning_rate(state: TutorState):
     skill = state["current_skill"]
-    learning_rate = state["learning_rates"][skill]
+    learning_rate = state["learning_rates"][skill] or 0.15
     no_of_questions = state["question_count"] or 1
     no_of_answers = state["answer_count"] or 1
 
@@ -32,7 +32,7 @@ def update_learning_rate(state: TutorState):
     new_learning_rate = llm.with_structured_output(LearningOut).invoke(prompt)
 
     learning_rates = dict(state["learning_rates"])
-    learning_rates[skill] = round(new_learning_rate, 3)
+    learning_rates[skill] = round(new_learning_rate.learning_rate, 3)
 
     return {
         "learning_rates": learning_rates
