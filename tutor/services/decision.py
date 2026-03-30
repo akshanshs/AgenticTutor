@@ -32,8 +32,7 @@ Important information for Action decision:
 - Use the decision policy provided by human.
 
 Human review rules:
-- true only for ambiguous or conflicting cases
-
+- true only for ambiguous or conflicting cases. Unclear or conflicting policies.
 Reasoning rules:
 - Base the decision primarily on decision policies, correctness, diagnosis, and feedback.
 - Use mastery and question_count as secondary context.
