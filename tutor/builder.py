@@ -69,7 +69,7 @@ builder.add_conditional_edges(
         "use_prerequisite_tool": "queue_tool_call",
         "use_example_tool": "queue_tool_call",
         "use_hint_tool": "queue_tool_call",
-        "end_session": END,
+        # "end_session": END,
         "human_review": "human_review",
     },
 )
@@ -82,7 +82,7 @@ builder.add_conditional_edges(
         "use_prerequisite_tool": "queue_tool_call",
         "use_example_tool": "queue_tool_call",
         "use_hint_tool": "queue_tool_call",
-        "end_session": END,
+        # "end_session": END,
     },
 )
 

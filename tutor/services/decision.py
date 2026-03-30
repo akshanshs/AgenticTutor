@@ -21,7 +21,6 @@ Available actions:
 - use_prerequisite_tool
 - use_example_tool
 - use_hint_tool
-- end_session
 
 Choose the single best next action.
 Also set needs_human_review = true if:
@@ -29,6 +28,7 @@ Also set needs_human_review = true if:
 - mastery is high but performance suddenly drops, or
 - you are not confident in the intervention.
 """)
+# - end_session
 
 chain = prompt | llm.with_structured_output(DecisionOut)
 
