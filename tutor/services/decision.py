@@ -1,5 +1,6 @@
 from tutor.schemas.state import TutorState
 from tutor.schemas.outputs import DecisionOut
+from tutor.retrieval.context import decision_context
 from tutor.models import llm
 
 from langchain_core.prompts import ChatPromptTemplate
@@ -34,6 +35,8 @@ chain = prompt | llm.with_structured_output(DecisionOut)
 def decide_next_action(state: TutorState):
     skill = state["current_skill"]
     mastery = state["mastery"][skill]
+
+    # decision_policy = decision_context(state)
 
     result = chain.invoke({
         "skill": skill,

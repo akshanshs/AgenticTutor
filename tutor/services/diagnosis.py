@@ -1,6 +1,6 @@
 from tutor.schemas.state import TutorState
 from tutor.schemas.outputs import DiagnosisOut
-from tutor.retrieval.context import answer_context
+from tutor.retrieval.context import answer_context, careless_context, misconcept_context
 from tutor.models import llm
 
 from langchain_core.prompts import ChatPromptTemplate
