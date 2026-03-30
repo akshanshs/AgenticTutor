@@ -1,6 +1,5 @@
 from tutor.schemas.state import TutorState
 from tutor.schemas.outputs import QuestionOut
-from langgraph.types import interrupt
 from tutor.retrieval.context import question_context
 from tutor.models import llm
 

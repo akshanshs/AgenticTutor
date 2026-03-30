@@ -61,12 +61,15 @@ def graph_config():
     return {"configurable": {"thread_id": st.session_state.thread_id}}
 
 
-def build_initial_state(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float]):
+def build_initial_state(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float], skill_answered_questions: dict[str, int]):
     return {
         "student_id": student_id,
         "mastery": mastery,
         "learning_rates": learning_rates,
+        "skill_answered_questions": skill_answered_questions,
         "current_skill": "",
+        "current_lesson": "",
+        "total_lessons": 0,
         "current_question": "",
         "correct_last_answer": "",
         "last_answer": "",
@@ -112,8 +115,8 @@ def session_finished():
     return not interrupts and not nxt
 
 
-def start_session(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float]):
-    initial_state = build_initial_state(student_id, mastery, learning_rates)
+def start_session(student_id: str, mastery: dict[str, float], learning_rates: dict[str, float], skill_answered_questions: dict[str, int]):
+    initial_state = build_initial_state(student_id, mastery, learning_rates, skill_answered_questions)
     graph.invoke(initial_state, config=graph_config())
     st.session_state.started = True
     st.session_state.history = []
@@ -192,11 +195,18 @@ with st.sidebar:
         "thermodynamics": 0.15,
     }
 
+    skill_answered_questions_input = {
+        "motion": 0,
+        "force": 0,
+        "energy": 0,
+        "thermodynamics": 0,
+    }
+
     c1, c2 = st.columns(2)
     with c1:
         if st.button("Start / Restart", use_container_width=True):
             reset_session()
-            start_session(student_id, mastery_input, learning_rates_input)
+            start_session(student_id, mastery_input, learning_rates_input, skill_answered_questions_input)
             st.rerun()
 
     with c2:

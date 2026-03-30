@@ -7,6 +7,12 @@ class RagConfig:
     embedding_model: str
     k: int = 4
 
+lesson_rag = RagConfig(
+    persist_dir="vector_db/vector_physics",
+    collection_name="physics_book",
+    embedding_model="text-embedding-3-small",
+    k=4,
+)
 
 question_rag = RagConfig(
     persist_dir="vector_db/vector_physics",

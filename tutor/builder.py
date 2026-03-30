@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 from tutor.schemas.state import TutorState
 
 from tutor.services.learning_rate import update_learning_rate
-from tutor.services.generate import generate_question
+from tutor.services.generate_lesson import generate_lesson
+from tutor.services.lesson import teach_lesson
+from tutor.services.generate_question import generate_question
 from tutor.services.question import ask_question
 from tutor.services.evaluation import evaluate_answer
 from tutor.services.mastery import update_mastery
@@ -13,7 +15,7 @@ from tutor.services.diagnosis import diagnose
 from tutor.services.decision import decide_next_action
 from tutor.services.human_loop import human_review
 
-from tutor.routers import route_after_human_review, route_after_decision
+from tutor.routers import route_after_human_review, route_after_decision, route_after_lr_update
 from tutor.tools.application import queue_tool_call, apply_tool_result
 from tutor.tools.support_tools import tool_node
 from tutor.utils.helpers import load_student, choose_skill
@@ -25,6 +27,8 @@ builder = StateGraph(TutorState)
 builder.add_node("load_student", load_student)
 builder.add_node("choose_skill", choose_skill)
 builder.add_node("update_learning_rate", update_learning_rate)
+builder.add_node("generate_lesson", generate_lesson)
+builder.add_node("teach_lesson", teach_lesson)
 builder.add_node("generate_question", generate_question)
 builder.add_node("ask_question", ask_question)
 builder.add_node("evaluate_answer", evaluate_answer)
@@ -39,12 +43,23 @@ builder.add_node("apply_tool_result", apply_tool_result)
 builder.add_edge(START, "load_student")
 builder.add_edge("load_student", "choose_skill")
 builder.add_edge("choose_skill", "update_learning_rate")
-builder.add_edge("update_learning_rate", "generate_question")
+# builder.add_edge("update_learning_rate", "generate_question")
+builder.add_edge("generate_lesson", "teach_lesson")
+builder.add_edge("teach_lesson", "generate_question")
 builder.add_edge("generate_question", "ask_question")
 builder.add_edge("ask_question", "evaluate_answer")
 builder.add_edge("evaluate_answer", "update_mastery")
 builder.add_edge("update_mastery", "diagnose")
 builder.add_edge("diagnose", "decide_next_action")
+
+builder.add_conditional_edges(
+    "update_learning_rate",
+    route_after_lr_update,
+    {
+        "new_lesson": "generate_lesson",
+        "continue_questioning": "generate_question"
+    },
+)
 
 builder.add_conditional_edges(
     "decide_next_action",
