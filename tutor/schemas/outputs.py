@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import Literal
 
+class LessonOut(BaseModel):
+    lesson: str = Field(description="The lesson for the current skill context")
+
 class QuestionOut(BaseModel):
     question: str = Field(description="The quiz question")
     answer_options: list[str] = Field(min_length=3, max_length=3, description="three possible answer to the question one correct, and another incorrect")
