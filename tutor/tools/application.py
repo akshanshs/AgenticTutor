@@ -4,9 +4,9 @@ from langchain_core.messages import AIMessage, ToolMessage
 
 def queue_tool_call(state: TutorState):
     action_to_tool = {
-        "use_prerequisite_tool": "get_prerequisite_note",
-        "use_example_tool": "get_worked_example",
-        "use_hint_tool": "get_targeted_hint",
+        "provide_prerequisite_information": "get_prerequisite_note",
+        "provide_worked_example": "get_worked_example",
+        "provide_hint": "get_targeted_hint",
     }
 
     tool_name = action_to_tool[state["next_action"]]
