@@ -38,7 +38,7 @@ Lesson context:
 
 chain = prompt | llm.with_structured_output(LessonOut)
 
-def generate_question(state: TutorState):
+def generate_lesson(state: TutorState):
 
     skill = state["current_skill"]
     context_prompt = lesson_context(state)
