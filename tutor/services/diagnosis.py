@@ -63,6 +63,12 @@ Feedback: {feedback}
 
 Concept context:
 {concept_prompt}
+
+Misconception context:
+{misconcept_prompt}
+
+Carelessness context:
+{careless_prompt}
         """.strip(),
     ),
 ])
@@ -72,6 +78,8 @@ chain = prompt | llm.with_structured_output(DiagnosisOut)
 def diagnose(state: TutorState):
 
     concept_prompt = answer_context(state)
+    misconcept_prompt = ""
+    careless_prompt = ""
     # misconcept_prompt = misconcept_context(state)
     # careless_prompt = careless_context(state)
 
@@ -82,7 +90,9 @@ def diagnose(state: TutorState):
         "correct_answer": state['correct_last_answer'],
         "score": state['score'],
         "feedback": state['feedback'],
-        "concept_prompt": concept_prompt
+        "concept_prompt": concept_prompt,
+        "misconcept_prompt": misconcept_prompt,
+        "careless_prompt": careless_prompt
     })
 
     return {
