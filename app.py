@@ -67,6 +67,8 @@ def build_initial_state(student_id: str, mastery: dict[str, float], learning_rat
         "mastery": mastery,
         "learning_rates": learning_rates,
         "current_skill": "",
+        "current_lesson": "",
+        "total_lessons": 0,
         "current_question": "",
         "correct_last_answer": "",
         "last_answer": "",
