@@ -15,7 +15,7 @@ from tutor.services.diagnosis import diagnose
 from tutor.services.decision import decide_next_action
 from tutor.services.human_loop import human_review
 
-from tutor.routers import route_after_human_review, route_after_decision
+from tutor.routers import route_after_human_review, route_after_decision, route_after_lr_update
 from tutor.tools.application import queue_tool_call, apply_tool_result
 from tutor.tools.support_tools import tool_node
 from tutor.utils.helpers import load_student, choose_skill
