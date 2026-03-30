@@ -35,3 +35,11 @@ careless_rag = RagConfig(
     embedding_model="text-embedding-3-small",
     k=4,
 )
+
+
+decision_rag = RagConfig(
+    persist_dir="vector_db/vector_decision",
+    collection_name="decision_policy",
+    embedding_model="text-embedding-3-small",
+    k=4,
+)
