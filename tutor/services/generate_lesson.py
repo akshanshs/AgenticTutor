@@ -49,5 +49,5 @@ def generate_question(state: TutorState):
     })
 
     return {
-        "current_lesson": lesson.lesson
+        "current_lesson": lesson.lesson,
     }

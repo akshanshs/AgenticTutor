@@ -10,9 +10,11 @@ class TutorState(TypedDict):
     learning_rates: dict[str, float]
 
     current_skill: str
-    current_lesson: str
     current_question: str
     current_options: list[str]
+
+    current_lesson: str
+    total_lessons: int
 
     correct_last_answer: str
     last_answer: str
