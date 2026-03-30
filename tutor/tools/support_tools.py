@@ -50,7 +50,7 @@ def get_worked_example(runtime: ToolRuntime) -> str:
     """.strip()
 
     example = llm.invoke(prompt).content
-    return f"Worked example for {example}"
+    return f"{example}"
 
 @tool
 def get_targeted_hint(runtime: ToolRuntime) -> str:
@@ -73,7 +73,7 @@ def get_targeted_hint(runtime: ToolRuntime) -> str:
 
     hint = llm.invoke(prompt).content
 
-    return f"Try understand {hint}"
+    return f"{hint}"
 
 TOOLS = [get_prerequisite_note, get_worked_example, get_targeted_hint]
 tool_node = ToolNode(TOOLS)
