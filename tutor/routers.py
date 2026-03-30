@@ -11,10 +11,10 @@ def route_after_human_review(state: TutorState):
 
 def route_after_lr_update(state: TutorState):
     skill = state["current_skill"]
-    answered_questions = state["answered_questions"][skill]
+    skill_answered_questions = state["skill_answered_questions"][skill]
 
-    if answered_questions > 6:
-        state["answered_questions"][skill] = 0
+    if skill_answered_questions > 6:
+        state["skill_answered_questions"][skill] = 0
         return "new_lesson"
     else:
         return "continue_questioning"

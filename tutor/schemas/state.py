@@ -8,7 +8,7 @@ class TutorState(TypedDict):
     student_id: str
     mastery: dict[str, float]
     learning_rates: dict[str, float]
-    answered_questions: dict[str, int]
+    skill_answered_questions: dict[str, int]
 
     current_skill: str
     current_question: str
