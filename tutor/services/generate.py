@@ -53,7 +53,7 @@ def generate_question(state: TutorState):
             "current_question": state['current_question'],
             "current_options": state['current_options'],
             "correct_last_answer": state["correct_last_answer"],
-            "tool_context": None,  # consume tool context once used
+            #"tool_context": None,  # consume tool context once used
         }
 
     else:
@@ -76,5 +76,5 @@ def generate_question(state: TutorState):
             "current_question": question_and_answer.question,
             "current_options": question_and_answer.answer_options,
             "correct_last_answer": question_and_answer.correct_answer,
-            "tool_context": None,  # consume tool context once used
+            #"tool_context": None,  # consume tool context once used
         }
