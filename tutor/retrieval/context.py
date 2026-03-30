@@ -1,4 +1,4 @@
-from tutor.config.rag_settings import answer_rag, question_rag
+from tutor.config.rag_settings import answer_rag, question_rag, careless_rag, misconcept_rag
 from tutor.retrieval.chroma_store import get_vectordb
 from tutor.schemas.state import TutorState
 
@@ -59,6 +59,61 @@ def answer_context(state: TutorState) -> str:
     Skill: {skill}
     Question: {question}
     Correct answer: {correct_answer}
+    """.strip()
+
+    docs = vectordb.similarity_search(
+        query=query,
+        k=4,
+        filter={"lesson": skill}
+    )
+
+    context_prompt = "\n\n".join(doc.page_content for doc in docs)
+    return context_prompt
+
+
+    # for next step decision and diagnosing the answer
+@traceable
+def careless_context(state: TutorState):
+
+    vectordb = get_vectordb(careless_rag)
+
+    skill = state["current_skill"]
+    question = state["current_question"]
+    correct_answer = state["correct_last_answer"]
+    learner_answer = state["last_answer"]
+
+    query = f"""
+    Skill: {skill}
+    Question: {question}
+    Correct answer: {correct_answer}
+    Learner's answer: {learner_answer}
+    """.strip()
+
+    docs = vectordb.similarity_search(
+        query=query,
+        k=4,
+        filter={"lesson": skill}
+    )
+
+    context_prompt = "\n\n".join(doc.page_content for doc in docs)
+    return context_prompt
+
+
+@traceable
+def misconcept_context(state: TutorState):
+
+    vectordb = get_vectordb(misconcept_rag)
+
+    skill = state["current_skill"]
+    question = state["current_question"]
+    correct_answer = state["correct_last_answer"]
+    learner_answer = state["last_answer"]
+
+    query = f"""
+    Skill: {skill}
+    Question: {question}
+    Correct answer: {correct_answer}
+    Learner's answer: {learner_answer}
     """.strip()
 
     docs = vectordb.similarity_search(
