@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from tutor.schemas.state import TutorState
 
 from tutor.services.learning_rate import update_learning_rate
-from tutor.services.generate import generate_question
+from tutor.services.generate_question import generate_question
 from tutor.services.question import ask_question
 from tutor.services.evaluation import evaluate_answer
 from tutor.services.mastery import update_mastery
