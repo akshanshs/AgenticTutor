@@ -32,11 +32,10 @@ class DiagnosisOut(BaseModel):
 
 class DecisionOut(BaseModel):
     action: Literal[
-        "ask_question",
-        "use_prerequisite_tool",
-        "use_example_tool",
-        "use_hint_tool",
-        "end_session",
+        "ask_next_question",
+        "provide_prerequisite_information",
+        "provide_worked_example",
+        "provide_hint",
     ]
     needs_human_review: bool
     reason: str
