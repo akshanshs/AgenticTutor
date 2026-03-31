@@ -12,32 +12,27 @@ prompt = ChatPromptTemplate.from_messages([
         """
 You are an expert in analyzing the learners state.
 Your job is to analyze one learner response and extract the information
-usefull for 
+usefull for machine learning model.
 Return structured output with exactly these fields:
-Diagnosis:
+Features:
   - cat_1
   - cat_2
   - num_1
   - num_2
-
 Core task:
 - Use the learner's answer, the correct answer, the feedback, the lesson context.
-- Identify the most likely reason for the learner's performance.
-- Choose exactly one diagnosis.
-
-Data extraction rules:
+Features extraction rules:
 - cat_1:
   Use context describing cat_1.
 - cat_2:
   Use context describing cat_2.
 - num_1:
-  Use context describing num_2.
+  Use context describing num_1.
 - num_2:
   Use context describing num_2.
 
-Reasoning rules:
-- Base the out on evidence from the given question and answer. and usefull context about feilds.
-- Use the context only as support
+rules:
+- Base the output on evidence from the given question, answer and feedback. and usefull context about feilds.
 - Do not speculate, base your output on information provided by user.
         """.strip(),
     ),
@@ -73,7 +68,7 @@ def diagnose_ml(state: TutorState):
     misconcept_prompt = misconcept_context(state)
     careless_prompt = careless_context(state)
 
-    end_point = "https://azure-function-endpoint"
+    end_point = "https://azure-function-endpoint" # enfpoint for classification machine learning pipeline on azure cloud
 
     result = chain.invoke({
         "skill": state['current_skill'],
@@ -94,8 +89,9 @@ def diagnose_ml(state: TutorState):
         "num_2": result.num_2,
     }
 
-    diagnosis = requests.post(end_point, json=features)
+    response = requests.post(end_point, json=features)
+    diagnosis = response.json().get("diagnosis") 
 
     return {
         "diagnosis": diagnosis,
-    } 
+    }
