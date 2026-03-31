@@ -21,3 +21,10 @@ dependencies = [
     "streamlit",
     "tqdm",
 ]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["tutor*"]
+exclude = ["vector_db*", "scripts*"]
