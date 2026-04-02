@@ -20,6 +20,14 @@ Requirements:
 - cover the central concepts needed to understand the target skill
 - avoid numerical calculations and worked examples
 - avoid repetition
+
+Also create a concept graph in Graphviz DOT format.
+Graph rules:
+- use `digraph Lesson { ... }`
+- include 3 to 6 short concept nodes
+- directed edges should represent "supports", "causes", or "leads to" relationships
+- keep labels short and beginner friendly
+- return valid DOT syntax only
         """.strip(),
     ),
     (
@@ -50,4 +58,5 @@ def generate_lesson(state: TutorState):
 
     return {
         "current_lesson": lesson.lesson,
+        "current_lesson_graph": lesson.lesson_graph,
     }

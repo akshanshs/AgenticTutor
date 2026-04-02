@@ -65,6 +65,7 @@ def build_initial_state(student_id: str, mastery: dict[str, float], learning_rat
         "skill_answered_questions": skill_answered_questions,
         "current_skill": "",
         "current_lesson": "",
+        "current_lesson_graph": "",
         "total_lessons": 0,
         "current_question": "",
         "correct_last_answer": "",
@@ -123,9 +124,8 @@ def reset_session():
     st.session_state.started = False
     st.session_state.history = []
 
-def resume_student_lesson(lesson: str):
-
-    graph.invoke(Command(resume=lesson), config=graph_config())
+def resume_student_lesson():
+    graph.invoke(Command(resume="continue"), config=graph_config())
 
 def resume_student_answer(answer: str):
     payload = get_interrupt_payload()
@@ -343,20 +343,17 @@ elif payload and payload.get("kind") == "student_lesson":
     if payload.get("lesson"):
         st.info(payload["lesson"])
 
-    st.write(payload.get("lesson", ""))
+    lesson_graph = payload.get("lesson_graph", "")
+    if lesson_graph:
+        st.markdown("**Lesson concept graph**")
+        try:
+            st.graphviz_chart(lesson_graph)
+        except Exception:
+            st.code(lesson_graph, language="dot")
+            st.caption("Graph preview failed, showing DOT source instead.")
 
-    form_key = f"student_form_{values.get('question_count', 0)}_{payload.get('question', '')}"
-    with st.form(form_key):
-        answer = st.radio(
-            "Click next to continue",
-            payload.get("lesson", ""),
-            key=f"radio_{form_key}",
-        )
-
-        submitted = st.form_submit_button("Next")
-
-    if submitted:
-        resume_student_lesson(answer)
+    if st.button("Next", key=f"lesson_next_{values.get('question_count', 0)}"):
+        resume_student_lesson()
         st.rerun()
 
 else:
