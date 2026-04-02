@@ -4,12 +4,14 @@ from langgraph.types import interrupt
 def teach_lesson(state: TutorState):
     skill = state["current_skill"]
     lesson = state["current_lesson"]
+    lesson_graph = state.get("current_lesson_graph", "")
 
-    learner_answer = interrupt(
+    interrupt(
         {
             "kind": "student_lesson",
             "skill": skill,
             "lesson": lesson,
+            "lesson_graph": lesson_graph,
 
         }
     )

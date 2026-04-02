@@ -15,6 +15,7 @@ class TutorState(TypedDict):
     current_options: list[str]
 
     current_lesson: str
+    current_lesson_graph: str
     total_lessons: int
 
     correct_last_answer: str

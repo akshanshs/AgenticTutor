@@ -3,6 +3,9 @@ from typing import Literal
 
 class LessonOut(BaseModel):
     lesson: str = Field(description="The lesson for the current skill context")
+    lesson_graph: str = Field(
+        description="A valid Graphviz DOT directed graph string that visualizes key concept relationships from the lesson"
+    )
 
 class QuestionOut(BaseModel):
     question: str = Field(description="The quiz question")
