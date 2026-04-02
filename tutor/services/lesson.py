@@ -5,13 +5,14 @@ def teach_lesson(state: TutorState):
     skill = state["current_skill"]
     lesson = state["current_lesson"]
 
-    # learner_answer = interrupt(
-    #     {
-    #         "kind": "student_lesson",
-    #         "skill": skill,
+    interrupt(
+        {
+            "kind": "student_lesson",
+            "skill": skill,
+            "lesson": lesson,
 
-    #     }
-    # )
+        }
+    )
 
     return {
         "total_lessons": state["total_lessons"] + 1

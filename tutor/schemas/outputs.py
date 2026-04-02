@@ -39,3 +39,19 @@ class DecisionOut(BaseModel):
     ]
     needs_human_review: bool
     reason: str
+
+class MlFeatures(BaseModel):
+    cat1: Literal["A", "B", "C"]
+    cat2: Literal["X", "Y", "Y"]
+
+    num_1: float = Field(
+        description=" some description",
+        ge=0.05,
+        le=0.2
+    )
+
+    num_2: float = Field(
+        description=" some description",
+        ge= 1.0,
+        le= 10.0
+    )

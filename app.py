@@ -5,14 +5,10 @@ from langgraph.types import Command
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
-
-# Change this import if your graph file has a different name
 from tutor.builder import graph
 
-
-
-st.set_page_config(page_title="Adaptive Physics Tutor", layout="wide")
-st.title("Adaptive Physics Tutor")
+st.set_page_config(page_title="Physics Tutor", layout="wide")
+st.title("Physics tutor")
 
 
 # -------------------------
@@ -26,10 +22,10 @@ DEFAULT_MASTERY = {
 }
 
 OVERRIDE_ACTIONS = [
-    "ask_question",
-    "use_prerequisite_tool",
-    "use_example_tool",
-    "use_hint_tool",
+    "ask_next_question",
+    "provide_prerequisite_information",
+    "provide_worked_example",
+    "provide_hint",
     "end_session",
 ]
 
@@ -104,8 +100,30 @@ def get_interrupt_payload():
     if not interrupts:
         return None
 
-    first_interrupt = interrupts[0]
-    return getattr(first_interrupt, "value", first_interrupt)
+    def normalize_interrupt(raw_interrupt):
+        payload = getattr(raw_interrupt, "value", raw_interrupt)
+        if isinstance(payload, dict):
+            if isinstance(payload.get("value"), dict):
+                return payload["value"]
+            if isinstance(payload.get("payload"), dict):
+                return payload["payload"]
+            if isinstance(payload.get("data"), dict):
+                return payload["data"]
+        return payload
+
+    normalized_interrupts = [normalize_interrupt(item) for item in interrupts]
+    lesson_interrupt = next(
+        (
+            item
+            for item in normalized_interrupts
+            if isinstance(item, dict) and item.get("kind") == "student_lesson"
+        ),
+        None,
+    )
+    if lesson_interrupt:
+        return lesson_interrupt
+
+    return normalized_interrupts[-1]
 
 
 def session_finished():
@@ -127,6 +145,17 @@ def reset_session():
     st.session_state.started = False
     st.session_state.history = []
 
+def resume_student_lesson():
+    payload = get_interrupt_payload()
+    if payload:
+        st.session_state.history.append(
+            {
+                "kind": "student_lesson",
+                "skill": payload.get("skill", ""),
+                "lesson": payload.get("lesson", ""),
+            }
+        )
+    graph.invoke(Command(resume="continue"), config=graph_config())
 
 def resume_student_answer(answer: str):
     payload = get_interrupt_payload()
@@ -134,6 +163,7 @@ def resume_student_answer(answer: str):
     if payload:
         st.session_state.history.append(
             {
+                "kind": "student_answer",
                 "question": payload.get("question", ""),
                 "options": payload.get("options", []),
                 "selected_answer": answer,
@@ -196,10 +226,10 @@ with st.sidebar:
     }
 
     skill_answered_questions_input = {
-        "motion": 0,
-        "force": 0,
-        "energy": 0,
-        "thermodynamics": 0,
+        "motion": 7,
+        "force": 7,
+        "energy": 7,
+        "thermodynamics": 7,
     }
 
     c1, c2 = st.columns(2)
@@ -338,6 +368,26 @@ elif payload and payload.get("kind") == "teacher_review":
             resume_teacher_decision(mode=mode, action=override_action)
             st.rerun()
 
+elif payload and payload.get("kind") == "student_lesson":
+    st.subheader("Lesson")
+
+    if payload.get("lesson"):
+        st.info(payload["lesson"])
+
+    lesson = payload.get("lesson", "")
+    # if lesson:
+    #     st.markdown("**Lesson concept**")
+    #     try:
+    #         t =1
+    #         #st.write(lesson)
+    #     except Exception:
+    #         st.code(lesson, language="dot")
+    #         st.caption("Graph preview failed, showing DOT source instead.")
+
+    if st.button("Next", key=f"lesson_next_{values.get('question_count', 0)}"):
+        resume_student_lesson()
+        st.rerun()
+
 else:
     st.info("Graph is running or waiting for the next step.")
 
@@ -349,17 +399,24 @@ if st.session_state.history:
     st.subheader("Session history")
 
     for i, item in enumerate(reversed(st.session_state.history), start=1):
-        title = item.get("question", f"Question {i}")
+        item_kind = item.get("kind", "student_answer")
+        if item_kind == "student_lesson":
+            title = f"Lesson {i}"
+        else:
+            title = item.get("question", f"Question {i}")
         with st.expander(title, expanded=False):
             st.write(f"**Skill:** {item.get('skill', '-')}")
-            if item.get("support_context"):
-                st.write(f"**Support:** {item['support_context']}")
-            st.write(f"**Student answer:** {item.get('selected_answer', '-')}")
-            if item.get("feedback") is not None:
-                st.write(f"**Feedback:** {item.get('feedback')}")
-            if item.get("score") is not None:
-                st.write(f"**Score:** {item.get('score')}")
-            if item.get("diagnosis") is not None:
-                st.write(f"**Diagnosis:** {item.get('diagnosis')}")
-            if item.get("correct_answer"):
-                st.write(f"**Correct answer:** {item.get('correct_answer')}")
+            if item_kind == "student_lesson":
+                st.write(item.get("lesson", "-"))
+            else:
+                if item.get("support_context"):
+                    st.write(f"**Support:** {item['support_context']}")
+                st.write(f"**Student answer:** {item.get('selected_answer', '-')}")
+                if item.get("feedback") is not None:
+                    st.write(f"**Feedback:** {item.get('feedback')}")
+                if item.get("score") is not None:
+                    st.write(f"**Score:** {item.get('score')}")
+                if item.get("diagnosis") is not None:
+                    st.write(f"**Diagnosis:** {item.get('diagnosis')}")
+                if item.get("correct_answer"):
+                    st.write(f"**Correct answer:** {item.get('correct_answer')}")

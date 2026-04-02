@@ -12,6 +12,7 @@ from tutor.services.question import ask_question
 from tutor.services.evaluation import evaluate_answer
 from tutor.services.mastery import update_mastery
 from tutor.services.diagnosis import diagnose
+# from tutor.services.diagnosis_ml import diagnose_ml
 from tutor.services.decision import decide_next_action
 from tutor.services.human_loop import human_review
 
@@ -34,6 +35,7 @@ builder.add_node("ask_question", ask_question)
 builder.add_node("evaluate_answer", evaluate_answer)
 builder.add_node("update_mastery", update_mastery)
 builder.add_node("diagnose", diagnose)
+# builder.add_node("diagnose_ml", diagnose_ml)
 builder.add_node("decide_next_action", decide_next_action)
 builder.add_node("human_review", human_review)
 builder.add_node("queue_tool_call", queue_tool_call)
@@ -51,6 +53,9 @@ builder.add_edge("ask_question", "evaluate_answer")
 builder.add_edge("evaluate_answer", "update_mastery")
 builder.add_edge("update_mastery", "diagnose")
 builder.add_edge("diagnose", "decide_next_action")
+
+# builder.add_edge("update_mastery", "diagnose_ml")
+# builder.add_edge("diagnose_ml", "decide_next_action")
 
 builder.add_conditional_edges(
     "update_learning_rate",
@@ -81,6 +86,7 @@ builder.add_conditional_edges(
         "provide_prerequisite_information": "queue_tool_call",
         "provide_worked_example": "queue_tool_call",
         "provide_hint": "queue_tool_call",
+        "end_session": END
     },
 )
 
