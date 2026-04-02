@@ -101,8 +101,30 @@ def get_interrupt_payload():
     if not interrupts:
         return None
 
-    first_interrupt = interrupts[0]
-    return getattr(first_interrupt, "value", first_interrupt)
+    def normalize_interrupt(raw_interrupt):
+        payload = getattr(raw_interrupt, "value", raw_interrupt)
+        if isinstance(payload, dict):
+            if isinstance(payload.get("value"), dict):
+                return payload["value"]
+            if isinstance(payload.get("payload"), dict):
+                return payload["payload"]
+            if isinstance(payload.get("data"), dict):
+                return payload["data"]
+        return payload
+
+    normalized_interrupts = [normalize_interrupt(item) for item in interrupts]
+    lesson_interrupt = next(
+        (
+            item
+            for item in normalized_interrupts
+            if isinstance(item, dict) and item.get("kind") == "student_lesson"
+        ),
+        None,
+    )
+    if lesson_interrupt:
+        return lesson_interrupt
+
+    return normalized_interrupts[-1]
 
 
 def session_finished():
