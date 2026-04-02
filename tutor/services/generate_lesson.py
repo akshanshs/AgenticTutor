@@ -15,7 +15,7 @@ Write a short concept-focused lesson for teaching the learner.
 
 Requirements:
 - exactly one paragraph
-- between 30 and 40 words
+- between 60 and 70 words
 - based only on the provided lesson context
 - cover the central concepts needed to understand the target skill
 - avoid numerical calculations and worked examples

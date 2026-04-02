@@ -7,8 +7,8 @@ load_dotenv(override=True)
 
 from tutor.builder import graph
 
-st.set_page_config(page_title="mock test", layout="wide")
-st.title("mock test")
+st.set_page_config(page_title="Physics Tutor", layout="wide")
+st.title("Physics tutor")
 
 
 # -------------------------
@@ -226,10 +226,10 @@ with st.sidebar:
     }
 
     skill_answered_questions_input = {
-        "motion": 0,
-        "force": 0,
-        "energy": 0,
-        "thermodynamics": 0,
+        "motion": 7,
+        "force": 7,
+        "energy": 7,
+        "thermodynamics": 7,
     }
 
     c1, c2 = st.columns(2)
@@ -375,13 +375,14 @@ elif payload and payload.get("kind") == "student_lesson":
         st.info(payload["lesson"])
 
     lesson = payload.get("lesson", "")
-    if lesson:
-        st.markdown("**Lesson concept**")
-        try:
-            st.write(lesson)
-        except Exception:
-            st.code(lesson, language="dot")
-            st.caption("Graph preview failed, showing DOT source instead.")
+    # if lesson:
+    #     st.markdown("**Lesson concept**")
+    #     try:
+    #         t =1
+    #         #st.write(lesson)
+    #     except Exception:
+    #         st.code(lesson, language="dot")
+    #         st.caption("Graph preview failed, showing DOT source instead.")
 
     if st.button("Next", key=f"lesson_next_{values.get('question_count', 0)}"):
         resume_student_lesson()
