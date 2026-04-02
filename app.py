@@ -5,14 +5,10 @@ from langgraph.types import Command
 from dotenv import load_dotenv
 load_dotenv(override=True)
 
-
-# Change this import if your graph file has a different name
 from tutor.builder import graph
 
-
-
-st.set_page_config(page_title="Adaptive Physics Tutor", layout="wide")
-st.title("Adaptive Physics Tutor")
+st.set_page_config(page_title="mock test", layout="wide")
+st.title("mock test")
 
 
 # -------------------------
@@ -26,10 +22,10 @@ DEFAULT_MASTERY = {
 }
 
 OVERRIDE_ACTIONS = [
-    "ask_question",
-    "use_prerequisite_tool",
-    "use_example_tool",
-    "use_hint_tool",
+    "ask_next_question",
+    "provide_prerequisite_information",
+    "provide_worked_example",
+    "provide_hint",
     "end_session",
 ]
 
@@ -127,6 +123,9 @@ def reset_session():
     st.session_state.started = False
     st.session_state.history = []
 
+def resume_student_lesson(lesson: str):
+
+    graph.invoke(Command(resume=lesson), config=graph_config())
 
 def resume_student_answer(answer: str):
     payload = get_interrupt_payload()
@@ -337,6 +336,28 @@ elif payload and payload.get("kind") == "teacher_review":
         if st.button("Send teacher decision"):
             resume_teacher_decision(mode=mode, action=override_action)
             st.rerun()
+
+elif payload and payload.get("kind") == "student_lesson":
+    st.subheader("Lesson")
+
+    if payload.get("lesson"):
+        st.info(payload["lesson"])
+
+    st.write(payload.get("lesson", ""))
+
+    form_key = f"student_form_{values.get('question_count', 0)}_{payload.get('question', '')}"
+    with st.form(form_key):
+        answer = st.radio(
+            "Click next to continue",
+            payload.get("lesson", ""),
+            key=f"radio_{form_key}",
+        )
+
+        submitted = st.form_submit_button("Next")
+
+    if submitted:
+        resume_student_lesson(answer)
+        st.rerun()
 
 else:
     st.info("Graph is running or waiting for the next step.")

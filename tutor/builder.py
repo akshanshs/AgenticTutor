@@ -86,6 +86,7 @@ builder.add_conditional_edges(
         "provide_prerequisite_information": "queue_tool_call",
         "provide_worked_example": "queue_tool_call",
         "provide_hint": "queue_tool_call",
+        "end_session": END
     },
 )
 
