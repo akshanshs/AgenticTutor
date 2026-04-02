@@ -146,6 +146,15 @@ def reset_session():
     st.session_state.history = []
 
 def resume_student_lesson():
+    payload = get_interrupt_payload()
+    if payload:
+        st.session_state.history.append(
+            {
+                "kind": "student_lesson",
+                "skill": payload.get("skill", ""),
+                "lesson": payload.get("lesson", ""),
+            }
+        )
     graph.invoke(Command(resume="continue"), config=graph_config())
 
 def resume_student_answer(answer: str):
@@ -154,6 +163,7 @@ def resume_student_answer(answer: str):
     if payload:
         st.session_state.history.append(
             {
+                "kind": "student_answer",
                 "question": payload.get("question", ""),
                 "options": payload.get("options", []),
                 "selected_answer": answer,
@@ -388,17 +398,24 @@ if st.session_state.history:
     st.subheader("Session history")
 
     for i, item in enumerate(reversed(st.session_state.history), start=1):
-        title = item.get("question", f"Question {i}")
+        item_kind = item.get("kind", "student_answer")
+        if item_kind == "student_lesson":
+            title = f"Lesson {i}"
+        else:
+            title = item.get("question", f"Question {i}")
         with st.expander(title, expanded=False):
             st.write(f"**Skill:** {item.get('skill', '-')}")
-            if item.get("support_context"):
-                st.write(f"**Support:** {item['support_context']}")
-            st.write(f"**Student answer:** {item.get('selected_answer', '-')}")
-            if item.get("feedback") is not None:
-                st.write(f"**Feedback:** {item.get('feedback')}")
-            if item.get("score") is not None:
-                st.write(f"**Score:** {item.get('score')}")
-            if item.get("diagnosis") is not None:
-                st.write(f"**Diagnosis:** {item.get('diagnosis')}")
-            if item.get("correct_answer"):
-                st.write(f"**Correct answer:** {item.get('correct_answer')}")
+            if item_kind == "student_lesson":
+                st.write(item.get("lesson", "-"))
+            else:
+                if item.get("support_context"):
+                    st.write(f"**Support:** {item['support_context']}")
+                st.write(f"**Student answer:** {item.get('selected_answer', '-')}")
+                if item.get("feedback") is not None:
+                    st.write(f"**Feedback:** {item.get('feedback')}")
+                if item.get("score") is not None:
+                    st.write(f"**Score:** {item.get('score')}")
+                if item.get("diagnosis") is not None:
+                    st.write(f"**Diagnosis:** {item.get('diagnosis')}")
+                if item.get("correct_answer"):
+                    st.write(f"**Correct answer:** {item.get('correct_answer')}")
