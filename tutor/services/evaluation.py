@@ -1,3 +1,4 @@
+from app import skill_answered_questions_input
 from tutor.schemas.state import TutorState
 from tutor.schemas.outputs import EvalOut
 from tutor.retrieval.context import answer_context
@@ -52,9 +53,11 @@ chain = prompt | llm_eval.with_structured_output(EvalOut)
 def evaluate_answer(state: TutorState):
 
     context_prompt = answer_context(state)
+    skill = state["current_skill"]
+    skill_answered_questions = dict(state["skill_answered_questions"])
 
     result = chain.invoke({
-        "current_skill": state["current_skill"],
+        "current_skill": skill,
         "current_question": state["current_question"],
         "correct_last_answer": state["correct_last_answer"],
         "last_answer": state["last_answer"],
@@ -63,6 +66,7 @@ def evaluate_answer(state: TutorState):
 
     if result.is_correct:
         answered_count = state["answer_count"] + 1
+        skill_answered_questions[skill] = skill_answered_questions[skill] + 1
     else:
         answered_count = state["answer_count"]
 
@@ -71,5 +75,6 @@ def evaluate_answer(state: TutorState):
         "feedback": result.feedback,
         "is_correct": result.is_correct,
         "answered_questions": [state["current_question"]] if result.is_correct else [],
-        "answered_count": answered_count
+        "answered_count": answered_count,
+        "skill_answered_questions": skill_answered_questions
     }
