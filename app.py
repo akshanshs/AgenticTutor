@@ -65,7 +65,6 @@ def build_initial_state(student_id: str, mastery: dict[str, float], learning_rat
         "skill_answered_questions": skill_answered_questions,
         "current_skill": "",
         "current_lesson": "",
-        "current_lesson_graph": "",
         "total_lessons": 0,
         "current_question": "",
         "correct_last_answer": "",
@@ -365,13 +364,13 @@ elif payload and payload.get("kind") == "student_lesson":
     if payload.get("lesson"):
         st.info(payload["lesson"])
 
-    lesson_graph = payload.get("lesson_graph", "")
-    if lesson_graph:
-        st.markdown("**Lesson concept graph**")
+    lesson = payload.get("lesson", "")
+    if lesson:
+        st.markdown("**Lesson concept**")
         try:
-            st.graphviz_chart(lesson_graph)
+            st.write(lesson)
         except Exception:
-            st.code(lesson_graph, language="dot")
+            st.code(lesson, language="dot")
             st.caption("Graph preview failed, showing DOT source instead.")
 
     if st.button("Next", key=f"lesson_next_{values.get('question_count', 0)}"):
